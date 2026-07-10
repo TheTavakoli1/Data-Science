@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="fa" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy Cheat Sheet – Complete Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg:       #0d1117;
+    --surface:  #161b22;
+    --border:   #21262d;
+    --accent:   #58a6ff;
+    --green:    #3fb950;
+    --orange:   #f0883e;
+    --purple:   #d2a8ff;
+    --red:      #ff7b72;
+    --yellow:   #e3b341;
+    --text:     #e6edf3;
+    --muted:    #8b949e;
+    --tag-bg:   #1f2937;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(88,166,255,0.12) 0%, transparent 70%);
+  }
+  .hero-inner { max-width: 1400px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    background: rgba(63,185,80,0.1);
+    border: 1px solid rgba(63,185,80,0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 600px;
+  }
+  .hero-meta {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--tag-bg);
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 40px 60px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .grid-wide { grid-column: span 2; }
+
+  /* ── SECTION HEADER ───────────────────────────────── */
+  .section-header {
+    margin: 44px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header h2 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-icon {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  /* ── CARD ─────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #30363d; }
+  .card-title {
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .card-body { padding: 14px 16px; }
+
+  /* ── TABLE ────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; }
+  tr { border-bottom: 1px solid rgba(33,38,45,0.7); }
+  tr:last-child { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td { padding: 7px 4px; vertical-align: top; }
+  td:first-child { width: 55%; }
+  td:last-child { color: var(--muted); font-size: 12px; padding-left: 12px; }
+
+  /* ── CODE INLINE ──────────────────────────────────── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .kw  { color: var(--purple); background: rgba(210,168,255,0.08); }
+  .fn  { color: var(--green);  background: rgba(63,185,80,0.08); }
+  .num { color: var(--orange); background: rgba(240,136,62,0.08); }
+  .str { color: var(--yellow); background: rgba(227,179,65,0.08); }
+  .ret { color: var(--red);    background: rgba(255,123,114,0.08); }
+
+  /* ── CODE BLOCK ───────────────────────────────────── */
+  .code-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+  .cb-comment { color: #6e7681; }
+  .cb-kw      { color: var(--purple); }
+  .cb-fn      { color: var(--accent); }
+  .cb-str     { color: var(--yellow); }
+  .cb-num     { color: var(--orange); }
+  .cb-op      { color: var(--muted); }
+
+  /* ── DTYPES GRID ──────────────────────────────────── */
+  .dtype-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .dtype-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .dtype-item code { font-size: 11px; }
+  .dtype-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ── ATTR LIST ────────────────────────────────────── */
+  .attr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(33,38,45,0.5);
+  }
+  .attr-row:last-child { border-bottom: none; }
+  .attr-val { color: var(--orange); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* ── PILL TAGS ────────────────────────────────────── */
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .pill-blue   { color: var(--accent);  border-color: rgba(88,166,255,0.3);  background: rgba(88,166,255,0.07); }
+  .pill-green  { color: var(--green);   border-color: rgba(63,185,80,0.3);   background: rgba(63,185,80,0.07); }
+  .pill-purple { color: var(--purple);  border-color: rgba(210,168,255,0.3); background: rgba(210,168,255,0.07); }
+  .pill-orange { color: var(--orange);  border-color: rgba(240,136,62,0.3);  background: rgba(240,136,62,0.07); }
+  .pill-red    { color: var(--red);     border-color: rgba(255,123,114,0.3); background: rgba(255,123,114,0.07); }
+
+  /* ── AXIS DIAGRAM ─────────────────────────────────── */
+  .axis-diagram {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: 8px;
+  }
+  .axis-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .axis-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .axis-array { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); }
+
+  /* ── TIP BOX ──────────────────────────────────────── */
+  .tip {
+    background: rgba(88,166,255,0.06);
+    border: 1px solid rgba(88,166,255,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+  }
+  .tip-icon { color: var(--accent); flex-shrink: 0; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  .footer {
+    margin-top: 60px;
+    border-top: 1px solid var(--border);
+    padding: 24px 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .grid-wide { grid-column: span 1; }
+    .container { padding: 24px 20px 60px; }
+    .hero { padding: 32px 20px 28px; }
+    .hero h1 { font-size: 26px; }
+    .dtype-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════ HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Complete Reference</div>
+    <h1>Num<span>Py</span> Cheat Sheet</h1>
+    <p>کامل‌ترین مرجع سریع NumPy — از آرایه‌سازی تا جبر خطی، پردازش تصویر و بهینه‌سازی</p>
+    <div class="hero-meta">
+      <span class="hero-tag">import numpy as np</span>
+      <span class="hero-tag">numpy >= 1.24</span>
+      <span class="hero-tag">Python 3.9+</span>
+      <span class="hero-tag">Medical Imaging Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ MAIN -->
+<div class="container">
+
+  <!-- ─── DATA TYPES ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(210,168,255,0.1)">🧬</div>
+    <h2>Data Types — dtypes</h2>
+  </div>
+  <div class="grid">
+    <div class="card grid-wide">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>NumPy dtypes</div>
+      <div class="card-body">
+        <div class="dtype-grid">
+          <div class="dtype-item"><code class="kw">np.int8/16/32/64</code><div class="dtype-desc">عدد صحیح علامت‌دار</div></div>
+          <div class="dtype-item"><code class="kw">np.uint8/16/32/64</code><div class="dtype-desc">عدد صحیح بدون علامت (تصویر!)</div></div>
+          <div class="dtype-item"><code class="kw">np.float16/32/64</code><div class="dtype-desc">اعداد اعشاری</div></div>
+          <div class="dtype-item"><code class="kw">np.complex64/128</code><div class="dtype-desc">اعداد مختلط</div></div>
+          <div class="dtype-item"><code class="kw">np.bool_</code><div class="dtype-desc">منطقی True/False</div></div>
+          <div class="dtype-item"><code class="kw">np.str_</code><div class="dtype-desc">رشته Unicode</div></div>
+        </div>
+        <div class="tip"><span class="tip-icon">💡</span>در پردازش تصویر CT، معمولاً <code>uint16</code> یا <code>float32</code> استفاده می‌شود.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ARRAY CREATION ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(88,166,255,0.1)">🔨</div>
+    <h2>Array Creation — ساخت آرایه</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>از داده مستقیم</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.array([1,2,3])</code></td><td>از لیست Python</td></tr>
+          <tr><td><code>np.array([[1,2],[3,4]])</code></td><td>ماتریس ۲×۲</td></tr>
+          <tr><td><code>np.array([1,2], dtype=np.float32)</code></td><td>با dtype مشخص</td></tr>
+          <tr><td><code>np.asarray(data)</code></td><td>بدون کپی در صورت امکان</td></tr>
+          <tr><td><code>np.frombuffer(buf, dtype)</code></td><td>از buffer باینری</td></tr>
+          <tr><td><code>np.fromfile('f.bin', dtype)</code></td><td>از فایل باینری</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>آرایه‌های خاص</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.zeros((3,4))</code></td><td>همه صفر</td></tr>
+          <tr><td><code>np.ones((3,4))</code></td><td>همه یک</td></tr>
+          <tr><td><code>np.full((3,4), 7)</code></td><td>پر با مقدار دلخواه</td></tr>
+          <tr><td><code>np.eye(n)</code></td><td>ماتریس واحد n×n</td></tr>
+          <tr><td><code>np.identity(n)</code></td><td>مشابه eye</td></tr>
+          <tr><td><code>np.empty((3,4))</code></td><td>بدون مقداردهی اولیه (سریع)</td></tr>
+          <tr><td><code>np.zeros_like(a)</code></td><td>صفر با شکل a</td></tr>
+          <tr><td><code>np.ones_like(a)</code></td><td>یک با شکل a</td></tr>
+          <tr><td><code>np.full_like(a, v)</code></td><td>مقدار v با شکل a</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>دنباله‌ها و بازه‌ها</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.arange(10)</code></td><td>0 تا 9</td></tr>
+          <tr><td><code>np.arange(2, 20, 3)</code></td><td>start, stop, step</td></tr>
+          <tr><td><code>np.linspace(0,1,100)</code></td><td>۱۰۰ نقطه یکنواخت [0,1]</td></tr>
+          <tr><td><code>np.logspace(0,3,4)</code></td><td>لگاریتمی: 1,10,100,1000</td></tr>
+          <tr><td><code>np.geomspace(1,1000,4)</code></td><td>تصاعد هندسی</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>تصادفی — np.random</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.random.seed(42)</code></td><td>تنظیم seed</td></tr>
+          <tr><td><code>rng = np.random.default_rng(42)</code></td><td>Generator جدید (توصیه‌شده)</td></tr>
+          <tr><td><code>rng.random((3,4))</code></td><td>uniform [0,1)</td></tr>
+          <tr><td><code>rng.integers(0,10,(3,4))</code></td><td>صحیح تصادفی</td></tr>
+          <tr><td><code>rng.normal(0,1,(3,4))</code></td><td>نرمال (μ, σ)</td></tr>
+          <tr><td><code>rng.choice(arr, n)</code></td><td>انتخاب تصادفی</td></tr>
+          <tr><td><code>rng.shuffle(arr)</code></td><td>درهم‌آمیختن inplace</td></tr>
+          <tr><td><code>rng.permutation(arr)</code></td><td>درهم‌آمیختن کپی</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ARRAY ATTRIBUTES ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(240,136,62,0.1)">📐</div>
+    <h2>Array Attributes — ویژگی‌های آرایه</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>خواص اصلی</div>
+      <div class="card-body">
+        <div class="attr-row"><code>a.shape</code><span class="attr-val">(3, 4, 5)</span></div>
+        <div class="attr-row"><code>a.ndim</code><span class="attr-val">3</span></div>
+        <div class="attr-row"><code>a.size</code><span class="attr-val">60 (کل عناصر)</span></div>
+        <div class="attr-row"><code>a.dtype</code><span class="attr-val">float64</span></div>
+        <div class="attr-row"><code>a.itemsize</code><span class="attr-val">8 (بایت/عنصر)</span></div>
+        <div class="attr-row"><code>a.nbytes</code><span class="attr-val">480 (کل بایت)</span></div>
+        <div class="attr-row"><code>a.T</code><span class="attr-val">ترانهاده</span></div>
+        <div class="attr-row"><code>a.flat</code><span class="attr-val">iterator خطی</span></div>
+        <div class="attr-row"><code>a.strides</code><span class="attr-val">گام‌های حافظه</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>نمایش محورها (axis)</div>
+      <div class="card-body">
+        <div class="axis-diagram">
+          <div class="axis-box">
+            <div class="axis-label">1D — axis=0</div>
+            <div class="axis-array">[1, 2, 3, 4]<br>→ ↓</div>
+          </div>
+          <div class="axis-box">
+            <div class="axis-label">2D — axis=0 (سطر)</div>
+            <div class="axis-array">[[1,2],<br> [3,4]] ↓</div>
+          </div>
+          <div class="axis-box">
+            <div class="axis-label">2D — axis=1 (ستون)</div>
+            <div class="axis-array">[[1,2],<br> [3,4]] →</div>
+          </div>
+          <div class="axis-box">
+            <div class="axis-label">3D (C,H,W) — CT</div>
+            <div class="axis-array">axis0=Channel<br>axis1=Height<br>axis2=Width</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── INDEXING ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(63,185,80,0.1)">🎯</div>
+    <h2>Indexing & Slicing — ایندکس‌گذاری</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Basic Indexing</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a[0]</code></td><td>اولین عنصر</td></tr>
+          <tr><td><code>a[-1]</code></td><td>آخرین عنصر</td></tr>
+          <tr><td><code>a[2,3]</code></td><td>سطر ۲، ستون ۳</td></tr>
+          <tr><td><code>a[1:4]</code></td><td>عناصر 1 تا 3</td></tr>
+          <tr><td><code>a[::2]</code></td><td>یک‌درمیان</td></tr>
+          <tr><td><code>a[::-1]</code></td><td>معکوس</td></tr>
+          <tr><td><code>a[1:3, 2:5]</code></td><td>زیرماتریس</td></tr>
+          <tr><td><code>a[:, 0]</code></td><td>ستون اول</td></tr>
+          <tr><td><code>a[0, :]</code></td><td>سطر اول</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Advanced Indexing</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a[[0,2,4]]</code></td><td>fancy indexing (کپی!)</td></tr>
+          <tr><td><code>a[a > 5]</code></td><td>boolean masking</td></tr>
+          <tr><td><code>a[np.where(a>5)]</code></td><td>where به‌عنوان ایندکس</td></tr>
+          <tr><td><code>np.where(a>5, a, 0)</code></td><td>جایگزینی شرطی</td></tr>
+          <tr><td><code>np.take(a, [0,2], axis=1)</code></td><td>انتخاب ستون</td></tr>
+          <tr><td><code>np.ix_([0,1],[2,3])</code></td><td>شبکه ایندکس</td></tr>
+          <tr><td><code>np.nonzero(a)</code></td><td>ایندکس عناصر غیرصفر</td></tr>
+          <tr><td><code>np.argwhere(a > 0)</code></td><td>مختصات عناصر True</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── RESHAPING ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(210,168,255,0.1)">🔄</div>
+    <h2>Reshaping & Manipulation — تغییر شکل</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>تغییر ابعاد</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a.reshape(2,6)</code></td><td>بدون کپی در صورت امکان</td></tr>
+          <tr><td><code>a.reshape(-1, 3)</code></td><td>-1 = محاسبه خودکار</td></tr>
+          <tr><td><code>a.ravel()</code></td><td>تسطیح (view اگر ممکن)</td></tr>
+          <tr><td><code>a.flatten()</code></td><td>تسطیح (همیشه کپی)</td></tr>
+          <tr><td><code>a.T</code></td><td>ترانهاده</td></tr>
+          <tr><td><code>np.transpose(a, (2,0,1))</code></td><td>جابجایی محورها دلخواه</td></tr>
+          <tr><td><code>a[np.newaxis, :]</code></td><td>افزودن بُعد جدید</td></tr>
+          <tr><td><code>np.expand_dims(a, axis=0)</code></td><td>مشابه newaxis</td></tr>
+          <tr><td><code>np.squeeze(a)</code></td><td>حذف ابعاد یک‌تایی</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>ترکیب و تقسیم</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.concatenate([a,b], axis=0)</code></td><td>الحاق در محور دلخواه</td></tr>
+          <tr><td><code>np.vstack([a,b])</code></td><td>عمودی (axis=0)</td></tr>
+          <tr><td><code>np.hstack([a,b])</code></td><td>افقی (axis=1)</td></tr>
+          <tr><td><code>np.stack([a,b], axis=0)</code></td><td>محور جدید</td></tr>
+          <tr><td><code>np.dstack([a,b])</code></td><td>عمقی (axis=2)</td></tr>
+          <tr><td><code>np.split(a, 3)</code></td><td>تقسیم مساوی</td></tr>
+          <tr><td><code>np.split(a, [2,5])</code></td><td>در نقاط مشخص</td></tr>
+          <tr><td><code>np.vsplit(a, 2)</code></td><td>تقسیم عمودی</td></tr>
+          <tr><td><code>np.hsplit(a, 2)</code></td><td>تقسیم افقی</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MATH OPS ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,123,114,0.1)">➕</div>
+    <h2>Math Operations — عملیات ریاضی</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>عملیات عنصری (Elementwise)</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a + b</code> / <code>np.add(a,b)</code></td><td>جمع</td></tr>
+          <tr><td><code>a - b</code> / <code>np.subtract</code></td><td>تفریق</td></tr>
+          <tr><td><code>a * b</code> / <code>np.multiply</code></td><td>ضرب عنصری</td></tr>
+          <tr><td><code>a / b</code> / <code>np.divide</code></td><td>تقسیم</td></tr>
+          <tr><td><code>a // b</code></td><td>تقسیم صحیح</td></tr>
+          <tr><td><code>a % b</code></td><td>باقیمانده</td></tr>
+          <tr><td><code>a ** b</code> / <code>np.power</code></td><td>توان</td></tr>
+          <tr><td><code>np.sqrt(a)</code></td><td>ریشه دوم</td></tr>
+          <tr><td><code>np.abs(a)</code></td><td>قدرمطلق</td></tr>
+          <tr><td><code>np.sign(a)</code></td><td>علامت: -1, 0, +1</td></tr>
+          <tr><td><code>np.clip(a, 0, 1)</code></td><td>کلمپ در [0,1]</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>توابع ریاضی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.exp(a)</code></td><td>eˣ</td></tr>
+          <tr><td><code>np.exp2(a)</code></td><td>2ˣ</td></tr>
+          <tr><td><code>np.log(a)</code></td><td>ln(x)</td></tr>
+          <tr><td><code>np.log2(a)</code></td><td>log₂(x)</td></tr>
+          <tr><td><code>np.log10(a)</code></td><td>log₁₀(x)</td></tr>
+          <tr><td><code>np.sin/cos/tan(a)</code></td><td>مثلثاتی (رادیان)</td></tr>
+          <tr><td><code>np.arcsin/arccos/arctan</code></td><td>معکوس مثلثاتی</td></tr>
+          <tr><td><code>np.degrees(a)</code></td><td>رادیان → درجه</td></tr>
+          <tr><td><code>np.radians(a)</code></td><td>درجه → رادیان</td></tr>
+          <tr><td><code>np.ceil/floor/round(a)</code></td><td>گرد کردن</td></tr>
+          <tr><td><code>np.hypot(a,b)</code></td><td>√(a²+b²)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>توابع تجمیعی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.sum(a, axis=0)</code></td><td>مجموع</td></tr>
+          <tr><td><code>np.prod(a)</code></td><td>ضرب همه</td></tr>
+          <tr><td><code>np.cumsum(a)</code></td><td>مجموع تجمیعی</td></tr>
+          <tr><td><code>np.cumprod(a)</code></td><td>ضرب تجمیعی</td></tr>
+          <tr><td><code>np.mean(a)</code></td><td>میانگین</td></tr>
+          <tr><td><code>np.median(a)</code></td><td>میانه</td></tr>
+          <tr><td><code>np.std(a)</code></td><td>انحراف معیار</td></tr>
+          <tr><td><code>np.var(a)</code></td><td>واریانس</td></tr>
+          <tr><td><code>np.min/max(a)</code></td><td>کمینه / بیشینه</td></tr>
+          <tr><td><code>np.argmin/argmax(a)</code></td><td>ایندکس کمینه/بیشینه</td></tr>
+          <tr><td><code>np.ptp(a)</code></td><td>range = max - min</td></tr>
+          <tr><td><code>np.percentile(a, 75)</code></td><td>صدک ۷۵ام</td></tr>
+          <tr><td><code>np.quantile(a, 0.75)</code></td><td>مشابه percentile</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>مقایسه و منطق</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a == b</code> / <code>np.equal</code></td><td>برابری عنصری</td></tr>
+          <tr><td><code>a > b</code> / <code>np.greater</code></td><td>بزرگتر</td></tr>
+          <tr><td><code>np.logical_and(a,b)</code></td><td>AND منطقی</td></tr>
+          <tr><td><code>np.logical_or(a,b)</code></td><td>OR منطقی</td></tr>
+          <tr><td><code>np.logical_not(a)</code></td><td>NOT منطقی</td></tr>
+          <tr><td><code>np.any(a)</code></td><td>آیا هیچ True هست؟</td></tr>
+          <tr><td><code>np.all(a)</code></td><td>آیا همه True هستند؟</td></tr>
+          <tr><td><code>np.isnan(a)</code></td><td>بررسی NaN</td></tr>
+          <tr><td><code>np.isinf(a)</code></td><td>بررسی Inf</td></tr>
+          <tr><td><code>np.isfinite(a)</code></td><td>مقدار محدود؟</td></tr>
+          <tr><td><code>np.allclose(a,b)</code></td><td>تقریباً برابر؟</td></tr>
+          <tr><td><code>np.array_equal(a,b)</code></td><td>دقیقاً برابر؟</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── LINEAR ALGEBRA ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(88,166,255,0.1)">🔢</div>
+    <h2>Linear Algebra — np.linalg</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>عملیات ماتریسی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a @ b</code></td><td>ضرب ماتریسی</td></tr>
+          <tr><td><code>np.matmul(a, b)</code></td><td>مشابه @</td></tr>
+          <tr><td><code>np.dot(a, b)</code></td><td>ضرب داخلی</td></tr>
+          <tr><td><code>np.inner(a, b)</code></td><td>ضرب داخلی برداری</td></tr>
+          <tr><td><code>np.outer(a, b)</code></td><td>ضرب خارجی</td></tr>
+          <tr><td><code>np.cross(a, b)</code></td><td>ضرب برداری ۳D</td></tr>
+          <tr><td><code>np.kron(a, b)</code></td><td>ضرب کرونکر</td></tr>
+          <tr><td><code>np.tensordot(a,b,axes)</code></td><td>ضرب تانسوری</td></tr>
+          <tr><td><code>np.einsum('ij,jk->ik',a,b)</code></td><td>Einstein summation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>np.linalg توابع</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.linalg.det(a)</code></td><td>دترمینان</td></tr>
+          <tr><td><code>np.linalg.inv(a)</code></td><td>معکوس ماتریس</td></tr>
+          <tr><td><code>np.linalg.pinv(a)</code></td><td>شبه‌معکوس Moore-Penrose</td></tr>
+          <tr><td><code>np.linalg.eig(a)</code></td><td>مقادیر/بردارهای ویژه</td></tr>
+          <tr><td><code>np.linalg.eigh(a)</code></td><td>ویژه برای ماتریس متقارن</td></tr>
+          <tr><td><code>np.linalg.svd(a)</code></td><td>تجزیه SVD</td></tr>
+          <tr><td><code>np.linalg.norm(a)</code></td><td>نرم (پیش‌فرض: L2)</td></tr>
+          <tr><td><code>np.linalg.norm(a, ord=1)</code></td><td>نرم L1</td></tr>
+          <tr><td><code>np.linalg.solve(A, b)</code></td><td>حل Ax=b</td></tr>
+          <tr><td><code>np.linalg.lstsq(A, b)</code></td><td>کمترین مربعات</td></tr>
+          <tr><td><code>np.linalg.matrix_rank(a)</code></td><td>رتبه ماتریس</td></tr>
+          <tr><td><code>np.linalg.trace(a)</code></td><td>اثر (مجموع قطر)</td></tr>
+          <tr><td><code>np.linalg.cholesky(a)</code></td><td>تجزیه Cholesky</td></tr>
+          <tr><td><code>np.linalg.qr(a)</code></td><td>تجزیه QR</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── BROADCASTING ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(63,185,80,0.1)">📡</div>
+    <h2>Broadcasting — قوانین انتشار</h2>
+  </div>
+  <div class="grid">
+    <div class="card grid-wide">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>قوانین Broadcasting</div>
+      <div class="card-body">
+        <div class="code-block">
+<span class="cb-comment"># قانون: ابعاد از راست مقایسه می‌شوند</span>
+<span class="cb-comment"># سازگارند اگر: برابرند  یا  یکی از آن‌ها 1 است</span>
+
+a = np.ones(<span class="cb-num">(3, 1, 5)</span>)   <span class="cb-comment"># shape (3, 1, 5)</span>
+b = np.ones(<span class="cb-num">(4, 5)</span>)      <span class="cb-comment"># shape    (4, 5)</span>
+c = a + b               <span class="cb-comment"># shape (3, 4, 5) ✓</span>
+
+<span class="cb-comment"># مثال عملی — نرمالیزاسیون per-feature:</span>
+X = np.random.randn(<span class="cb-num">100, 20</span>)  <span class="cb-comment"># 100 sample, 20 feature</span>
+mu  = X.mean(axis=<span class="cb-num">0</span>)          <span class="cb-comment"># shape (20,)</span>
+std = X.std(axis=<span class="cb-num">0</span>)           <span class="cb-comment"># shape (20,)</span>
+X_norm = (X - mu) / std       <span class="cb-comment"># broadcast خودکار → (100,20)</span>
+
+<span class="cb-comment"># افزودن بُعد برای broadcast صحیح:</span>
+row = np.array([<span class="cb-num">1,2,3</span>])        <span class="cb-comment"># (3,)</span>
+col = np.array([<span class="cb-num">10,20</span>])[:,np.newaxis]  <span class="cb-comment"># (2,1)</span>
+result = row + col            <span class="cb-comment"># (2,3)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SORTING ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(240,136,62,0.1)">🔃</div>
+    <h2>Sorting & Searching — مرتب‌سازی</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>مرتب‌سازی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.sort(a)</code></td><td>کپی مرتب‌شده</td></tr>
+          <tr><td><code>a.sort()</code></td><td>مرتب‌سازی درجا</td></tr>
+          <tr><td><code>np.sort(a, axis=0)</code></td><td>مرتب‌سازی ستونی</td></tr>
+          <tr><td><code>np.argsort(a)</code></td><td>ایندکس‌های مرتب‌سازی</td></tr>
+          <tr><td><code>np.argsort(a)[::-1]</code></td><td>نزولی</td></tr>
+          <tr><td><code>np.lexsort((b, a))</code></td><td>مرتب بر چند کلید</td></tr>
+          <tr><td><code>np.partition(a, k)</code></td><td>k-th smallest (سریع)</td></tr>
+          <tr><td><code>np.argpartition(a, k)</code></td><td>ایندکس partition</td></tr>
+          <tr><td><code>np.searchsorted(a, v)</code></td><td>جای درج در آرایه مرتب</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>جستجو و فیلتر</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.where(cond, x, y)</code></td><td>انتخاب شرطی</td></tr>
+          <tr><td><code>np.select([c1,c2],[v1,v2])</code></td><td>چند شرط</td></tr>
+          <tr><td><code>np.extract(cond, a)</code></td><td>فیلتر با شرط</td></tr>
+          <tr><td><code>np.compress(mask, a, axis)</code></td><td>فشرده‌سازی با mask</td></tr>
+          <tr><td><code>np.unique(a)</code></td><td>مقادیر یکتا</td></tr>
+          <tr><td><code>np.unique(a, return_counts=True)</code></td><td>با تعداد تکرار</td></tr>
+          <tr><td><code>np.in1d(a, b)</code></td><td>آیا a در b هست؟</td></tr>
+          <tr><td><code>np.intersect1d(a, b)</code></td><td>اشتراک</td></tr>
+          <tr><td><code>np.union1d(a, b)</code></td><td>اتحاد</td></tr>
+          <tr><td><code>np.setdiff1d(a, b)</code></td><td>تفاضل a - b</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FFT ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(88,166,255,0.1)">〰️</div>
+    <h2>FFT & Signal — تبدیل فوریه</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>np.fft</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.fft.fft(a)</code></td><td>تبدیل فوریه 1D</td></tr>
+          <tr><td><code>np.fft.ifft(a)</code></td><td>معکوس فوریه 1D</td></tr>
+          <tr><td><code>np.fft.fft2(a)</code></td><td>فوریه 2D (تصویر)</td></tr>
+          <tr><td><code>np.fft.ifft2(a)</code></td><td>معکوس 2D</td></tr>
+          <tr><td><code>np.fft.fftn(a)</code></td><td>فوریه n بُعدی</td></tr>
+          <tr><td><code>np.fft.rfft(a)</code></td><td>فوریه real-valued</td></tr>
+          <tr><td><code>np.fft.fftshift(a)</code></td><td>جابجایی DC به مرکز</td></tr>
+          <tr><td><code>np.fft.fftfreq(n, d)</code></td><td>فرکانس‌های FFT</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>مثال FFT تصویر CT</div>
+      <div class="card-body">
+        <div class="code-block">
+<span class="cb-kw">import</span> numpy <span class="cb-kw">as</span> np
+
+<span class="cb-comment"># اسلایس CT به‌عنوان آرایه float</span>
+ct_slice = np.random.rand(<span class="cb-num">512, 512</span>).astype(<span class="cb-str">'float32'</span>)
+
+<span class="cb-comment"># تبدیل فوریه 2D</span>
+F = np.fft.fft2(ct_slice)
+F_shifted = np.fft.fftshift(F)
+
+<span class="cb-comment"># طیف مگنیتود (log برای نمایش)</span>
+magnitude = np.log(<span class="cb-num">1</span> + np.abs(F_shifted))
+
+<span class="cb-comment"># فیلتر پایین‌گذر (Low-pass)</span>
+H, W = ct_slice.shape
+mask = np.zeros((H, W))
+cy, cx = H//<span class="cb-num">2</span>, W//<span class="cb-num">2</span>
+R = <span class="cb-num">50</span>
+Y, X = np.ogrid[:H, :W]
+mask[(Y-cy)**<span class="cb-num">2</span> + (X-cx)**<span class="cb-num">2</span> <= R**<span class="cb-num">2</span>] = <span class="cb-num">1</span>
+filtered = np.fft.ifft2(np.fft.ifftshift(F_shifted * mask)).real</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STATISTICS ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,123,114,0.1)">📊</div>
+    <h2>Statistics — آمار</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>توزیع‌ها و همبستگی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.cov(x, y)</code></td><td>ماتریس کوواریانس</td></tr>
+          <tr><td><code>np.corrcoef(x, y)</code></td><td>ضریب همبستگی پیرسون</td></tr>
+          <tr><td><code>np.histogram(a, bins=20)</code></td><td>هیستوگرام</td></tr>
+          <tr><td><code>np.histogram2d(x, y)</code></td><td>هیستوگرام 2D</td></tr>
+          <tr><td><code>np.bincount(a)</code></td><td>تعداد عناصر صحیح</td></tr>
+          <tr><td><code>np.digitize(x, bins)</code></td><td>bin‌بندی</td></tr>
+          <tr><td><code>np.average(a, weights=w)</code></td><td>میانگین وزنی</td></tr>
+          <tr><td><code>np.nanmean(a)</code></td><td>میانگین بدون NaN</td></tr>
+          <tr><td><code>np.nanstd(a)</code></td><td>std بدون NaN</td></tr>
+          <tr><td><code>np.nansum(a)</code></td><td>مجموع بدون NaN</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>توزیع‌های تصادفی</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>rng.normal(μ, σ, size)</code></td><td>توزیع نرمال</td></tr>
+          <tr><td><code>rng.uniform(low, high, size)</code></td><td>یکنواخت</td></tr>
+          <tr><td><code>rng.binomial(n, p, size)</code></td><td>دوجمله‌ای</td></tr>
+          <tr><td><code>rng.poisson(λ, size)</code></td><td>پواسون</td></tr>
+          <tr><td><code>rng.exponential(β, size)</code></td><td>نمایی</td></tr>
+          <tr><td><code>rng.beta(a, b, size)</code></td><td>بتا</td></tr>
+          <tr><td><code>rng.gamma(k, θ, size)</code></td><td>گاما</td></tr>
+          <tr><td><code>rng.dirichlet(α, size)</code></td><td>دیریکله</td></tr>
+          <tr><td><code>rng.multivariate_normal(μ,Σ)</code></td><td>نرمال چندمتغیره</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FILE I/O ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(63,185,80,0.1)">💾</div>
+    <h2>File I/O — ورودی/خروجی</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>ذخیره و بارگذاری</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.save('f.npy', a)</code></td><td>ذخیره یک آرایه</td></tr>
+          <tr><td><code>np.load('f.npy')</code></td><td>بارگذاری .npy</td></tr>
+          <tr><td><code>np.savez('f.npz', a=a, b=b)</code></td><td>ذخیره چند آرایه</td></tr>
+          <tr><td><code>np.savez_compressed('f.npz',...)</code></td><td>فشرده‌شده</td></tr>
+          <tr><td><code>d = np.load('f.npz')</code><br><code>d['a']</code></td><td>خواندن از npz</td></tr>
+          <tr><td><code>np.savetxt('f.csv', a, delimiter=',')</code></td><td>ذخیره CSV</td></tr>
+          <tr><td><code>np.loadtxt('f.csv', delimiter=',')</code></td><td>خواندن CSV</td></tr>
+          <tr><td><code>np.genfromtxt('f.csv', delimiter=',', names=True)</code></td><td>با هدر CSV</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>مدیریت حافظه</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.copy(a)</code></td><td>کپی کامل</td></tr>
+          <tr><td><code>a.copy()</code></td><td>مشابه</td></tr>
+          <tr><td><code>a.view()</code></td><td>view (بدون کپی)</td></tr>
+          <tr><td><code>np.shares_memory(a, b)</code></td><td>آیا حافظه مشترک؟</td></tr>
+          <tr><td><code>a.base</code></td><td>آرایه اصلی (اگر view)</td></tr>
+          <tr><td><code>np.ascontiguousarray(a)</code></td><td>حافظه C-contiguous</td></tr>
+          <tr><td><code>np.asfortranarray(a)</code></td><td>حافظه Fortran-contiguous</td></tr>
+          <tr><td><code>a.flags</code></td><td>وضعیت حافظه</td></tr>
+        </table>
+        <div class="tip"><span class="tip-icon">⚠️</span>Slicing یک <b>view</b> می‌سازد! تغییر در آن اصل را هم تغییر می‌دهد.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MEDICAL IMAGING ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(210,168,255,0.1)">🫁</div>
+    <h2>Medical Imaging — کاربردهای CT / پردازش تصویر</h2>
+  </div>
+  <div class="grid">
+    <div class="card grid-wide">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>عملیات رایج در پردازش CT Scan</div>
+      <div class="card-body">
+        <div class="code-block">
+<span class="cb-kw">import</span> numpy <span class="cb-kw">as</span> np
+
+<span class="cb-comment"># ─── نرمالیزاسیون HU به [0,1] ───────────────────────</span>
+<span class="cb-fn">def</span> normalize_ct(volume, hu_min=<span class="cb-num">-1000</span>, hu_max=<span class="cb-num">400</span>):
+    volume = np.clip(volume, hu_min, hu_max)
+    <span class="cb-kw">return</span> (volume - hu_min) / (hu_max - hu_min)
+
+<span class="cb-comment"># ─── Window/Level (Lung Window) ─────────────────────</span>
+<span class="cb-fn">def</span> apply_window(img, center=<span class="cb-num">-600</span>, width=<span class="cb-num">1500</span>):
+    low  = center - width / <span class="cb-num">2</span>
+    high = center + width / <span class="cb-num">2</span>
+    <span class="cb-kw">return</span> np.clip(img, low, high)
+
+<span class="cb-comment"># ─── Extract 3D patches برای nodule detection ────────</span>
+<span class="cb-fn">def</span> extract_patch_3d(volume, center, size=<span class="cb-num">64</span>):
+    z, y, x = center
+    h = size // <span class="cb-num">2</span>
+    <span class="cb-kw">return</span> volume[z-h:z+h, y-h:y+h, x-h:x+h]
+
+<span class="cb-comment"># ─── Binary mask و اعمال به حجم ──────────────────────</span>
+mask = (ct_volume > <span class="cb-num">-500</span>) & (ct_volume < <span class="cb-num">-100</span>)  <span class="cb-comment"># ریه</span>
+lung = ct_volume * mask
+
+<span class="cb-comment"># ─── آمار هر نودول ───────────────────────────────────</span>
+nodule_region = ct_volume[mask]
+stats = {
+    <span class="cb-str">'mean'</span>:   np.mean(nodule_region),
+    <span class="cb-str">'std'</span>:    np.std(nodule_region),
+    <span class="cb-str">'p10'</span>:   np.percentile(nodule_region, <span class="cb-num">10</span>),
+    <span class="cb-str">'p90'</span>:   np.percentile(nodule_region, <span class="cb-num">90</span>),
+    <span class="cb-str">'volume_voxels'</span>: np.sum(mask)
+}
+
+<span class="cb-comment"># ─── Data augmentation با flip/rotate ────────────────</span>
+aug_flip_h  = np.flip(patch, axis=<span class="cb-num">2</span>)        <span class="cb-comment"># horizontal</span>
+aug_flip_v  = np.flip(patch, axis=<span class="cb-num">1</span>)        <span class="cb-comment"># vertical</span>
+aug_rot90   = np.rot90(patch, k=<span class="cb-num">1</span>, axes=(<span class="cb-num">1</span>,<span class="cb-num">2</span>))  <span class="cb-comment"># rotate slice</span>
+
+<span class="cb-comment"># ─── Batch برای مدل ──────────────────────────────────</span>
+batch = np.stack([p1, p2, p3], axis=<span class="cb-num">0</span>)        <span class="cb-comment"># (N, D, H, W)</span>
+batch = batch[:, np.newaxis, ...]               <span class="cb-comment"># (N,1,D,H,W) for PyTorch</span>
+batch_f32 = batch.astype(np.float32) / <span class="cb-num">255.0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STRUCTURED / STRUCTURED ARRAYS ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(240,136,62,0.1)">🏗️</div>
+    <h2>Advanced — پیشرفته</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Structured Arrays</div>
+      <div class="card-body">
+        <div class="code-block">
+dt = np.dtype([
+    (<span class="cb-str">'patient_id'</span>, <span class="cb-str">'U20'</span>),
+    (<span class="cb-str">'age'</span>, np.int16),
+    (<span class="cb-str">'nodule_size'</span>, np.float32),
+    (<span class="cb-str">'malignant'</span>, np.bool_)
+])
+data = np.zeros(<span class="cb-num">100</span>, dtype=dt)
+data[<span class="cb-num">0</span>][<span class="cb-str">'patient_id'</span>] = <span class="cb-str">'P001'</span>
+data[<span class="cb-num">0</span>][<span class="cb-str">'nodule_size'</span>] = <span class="cb-num">5.2</span>
+
+<span class="cb-comment"># فیلتر موارد بدخیم</span>
+mal = data[data[<span class="cb-str">'malignant'</span>] == <span class="cb-kw">True</span>]</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Masked Arrays & Polynomials</div>
+      <div class="card-body">
+        <div class="code-block">
+<span class="cb-kw">import</span> numpy.ma <span class="cb-kw">as</span> ma
+
+<span class="cb-comment"># پوشاندن مقادیر نامعتبر</span>
+masked = ma.masked_where(a < <span class="cb-num">0</span>, a)
+masked = ma.masked_invalid(a)   <span class="cb-comment"># NaN & Inf</span>
+valid_mean = masked.mean()
+
+<span class="cb-comment"># ── چندجمله‌ای ──────────────────────</span>
+p = np.poly1d([<span class="cb-num">1</span>, -<span class="cb-num">3</span>, <span class="cb-num">2</span>])  <span class="cb-comment"># x²-3x+2</span>
+roots = np.roots([<span class="cb-num">1</span>,-<span class="cb-num">3</span>,<span class="cb-num">2</span>])
+coeffs = np.polyfit(x, y, deg=<span class="cb-num">3</span>)
+y_fit  = np.polyval(coeffs, x)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Vectorize & Apply</div>
+      <div class="card-body">
+        <div class="code-block">
+<span class="cb-comment"># برداری‌سازی تابع Python</span>
+<span class="cb-fn">def</span> hu_to_label(hu):
+    <span class="cb-kw">if</span> hu < <span class="cb-num">-500</span>: <span class="cb-kw">return</span> <span class="cb-num">0</span>  <span class="cb-comment"># هوا</span>
+    <span class="cb-kw">elif</span> hu < <span class="cb-num">100</span>: <span class="cb-kw">return</span> <span class="cb-num">1</span> <span class="cb-comment"># بافت نرم</span>
+    <span class="cb-kw">else</span>: <span class="cb-kw">return</span> <span class="cb-num">2</span>            <span class="cb-comment"># استخوان</span>
+
+vfunc = np.vectorize(hu_to_label)
+labels = vfunc(ct_volume)
+
+<span class="cb-comment"># np.apply_along_axis</span>
+result = np.apply_along_axis(
+    np.mean, axis=<span class="cb-num">0</span>, arr=data
+)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Meshgrid & Coordinates</div>
+      <div class="card-body">
+        <div class="code-block">
+x = np.linspace(-<span class="cb-num">1</span>, <span class="cb-num">1</span>, <span class="cb-num">100</span>)
+y = np.linspace(-<span class="cb-num">1</span>, <span class="cb-num">1</span>, <span class="cb-num">100</span>)
+XX, YY = np.meshgrid(x, y)
+Z = np.sqrt(XX**<span class="cb-num">2</span> + YY**<span class="cb-num">2</span>)
+
+<span class="cb-comment"># بهینه‌تر با ogrid/mgrid:</span>
+Y, X = np.ogrid[<span class="cb-num">0</span>:<span class="cb-num">512</span>, <span class="cb-num">0</span>:<span class="cb-num">512</span>]
+<span class="cb-comment"># دایره برای lung nodule mask:</span>
+cy, cx, r = <span class="cb-num">256</span>, <span class="cb-num">256</span>, <span class="cb-num">30</span>
+circle = (Y-cy)**<span class="cb-num">2</span> + (X-cx)**<span class="cb-num">2</span> <= r**<span class="cb-num">2</span>
+
+<span class="cb-comment"># نمونه‌برداری چند‌بُعدی</span>
+idx = np.indices((<span class="cb-num">3</span>,<span class="cb-num">4</span>))  <span class="cb-comment"># grid ایندکس</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PERFORMANCE ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(88,166,255,0.1)">⚡</div>
+    <h2>Performance Tips — بهینه‌سازی</h2>
+  </div>
+  <div class="grid">
+    <div class="card grid-wide">
+      <div class="card-title"><span class="dot" style="background:var(--accent)"></span>نکات کلیدی بهینه‌سازی</div>
+      <div class="card-body">
+        <div class="pills">
+          <span class="pill pill-blue">از حلقه for پرهیز کن</span>
+          <span class="pill pill-green">dtype=float32 در DL (نه float64)</span>
+          <span class="pill pill-orange">np.einsum برای ضرب تانسوری</span>
+          <span class="pill pill-purple">view به‌جای copy</span>
+          <span class="pill pill-red">np.empty به‌جای np.zeros وقتی پر می‌کنی</span>
+          <span class="pill pill-blue">contiguous memory → سرعت cache</span>
+          <span class="pill pill-green">np.partition به‌جای sort کامل برای top-k</span>
+          <span class="pill pill-orange">broadcasting به‌جای tile/repeat</span>
+          <span class="pill pill-purple">out= پارامتر برای کاهش allocation</span>
+          <span class="pill pill-red">memmap برای فایل‌های بزرگ (CT حجم)</span>
+        </div>
+        <div class="code-block" style="margin-top:14px">
+<span class="cb-comment"># ✗ کُند — حلقه Python</span>
+result = [x**<span class="cb-num">2</span> + <span class="cb-num">1</span> <span class="cb-kw">for</span> x <span class="cb-kw">in</span> arr]
+
+<span class="cb-comment"># ✓ سریع — vectorized</span>
+result = arr**<span class="cb-num">2</span> + <span class="cb-num">1</span>
+
+<span class="cb-comment"># ✓ بدون allocation اضافه</span>
+np.add(a, b, out=c)
+
+<span class="cb-comment"># ✓ Memory-mapped برای CT volume بزرگ</span>
+volume = np.memmap(<span class="cb-str">'ct_scan.dat'</span>, dtype=<span class="cb-str">'float32'</span>,
+                   mode=<span class="cb-str">'r'</span>, shape=(<span class="cb-num">512</span>,<span class="cb-num">512</span>,<span class="cb-num">300</span>))
+
+<span class="cb-comment"># ✓ einsum — ضرب batch ماتریس‌ها</span>
+<span class="cb-comment"># a: (B,M,K)  b: (B,K,N)  →  (B,M,N)</span>
+result = np.einsum(<span class="cb-str">'bmk,bkn->bmn'</span>, a, b)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── QUICK REFERENCE ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,123,114,0.1)">📋</div>
+    <h2>Quick Reference — خلاصه سریع</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>تبدیل نوع</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a.astype(np.float32)</code></td><td>تبدیل dtype</td></tr>
+          <tr><td><code>a.astype(int)</code></td><td>به int</td></tr>
+          <tr><td><code>a.tolist()</code></td><td>به list Python</td></tr>
+          <tr><td><code>a.tobytes()</code></td><td>به bytes خام</td></tr>
+          <tr><td><code>float(a)</code></td><td>scalar به float</td></tr>
+          <tr><td><code>a.item()</code></td><td>numpy scalar → Python</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>توابع پرکاربرد در ML</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.dot(W, x) + b</code></td><td>لایه Linear</td></tr>
+          <tr><td><code>1 / (1 + np.exp(-x))</code></td><td>Sigmoid</td></tr>
+          <tr><td><code>np.maximum(0, x)</code></td><td>ReLU</td></tr>
+          <tr><td><code>np.tanh(x)</code></td><td>Tanh</td></tr>
+          <tr><td><code>e = np.exp(x - x.max())<br>e / e.sum()</code></td><td>Softmax (stable)</td></tr>
+          <tr><td><code>-np.mean(y*np.log(p+1e-9))</code></td><td>Cross-Entropy Loss</td></tr>
+          <tr><td><code>np.mean((y - y_hat)**2)</code></td><td>MSE Loss</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--muted)"></span>ثابت‌ها</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>np.pi</code></td><td>π = 3.14159…</td></tr>
+          <tr><td><code>np.e</code></td><td>e = 2.71828…</td></tr>
+          <tr><td><code>np.inf</code></td><td>∞</td></tr>
+          <tr><td><code>np.nan</code></td><td>Not a Number</td></tr>
+          <tr><td><code>np.newaxis</code></td><td>None (alias)</td></tr>
+          <tr><td><code>np.finfo(np.float32).eps</code></td><td>epsilon ماشین</td></tr>
+          <tr><td><code>np.iinfo(np.int16).max</code></td><td>بیشترین int16</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Debug & Inspect</div>
+      <div class="card-body">
+        <table>
+          <tr><td><code>a.shape, a.dtype</code></td><td>بررسی سریع</td></tr>
+          <tr><td><code>np.info(np.sum)</code></td><td>مستندات تابع</td></tr>
+          <tr><td><code>np.set_printoptions(precision=3)</code></td><td>دقت نمایش</td></tr>
+          <tr><td><code>np.set_printoptions(suppress=True)</code></td><td>بدون notation علمی</td></tr>
+          <tr><td><code>np.testing.assert_allclose(a,b)</code></td><td>تست عددی</td></tr>
+          <tr><td><code>%timeit np.dot(a,b)</code></td><td>اندازه‌گیری زمان</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>NumPy Complete Cheat Sheet · Ahmad · 2026 · <code>import numpy as np</code></p>
+  </div>
+
+</div>
+</body>
+</html>

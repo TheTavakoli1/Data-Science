@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Persons>
+    <student1>
+        <id>1</id>
+        <name>xml</name>
+        <math>20</math>
+    </student1>
+
+    <student2>
+        <id>2</id>
+        <name>ahmad</name>
+        <math>13</math>
+    </student2>
+</Persons>

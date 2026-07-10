@@ -1,4 +1,3 @@
-# Data-Science
 # Data Analysis
 
 A comprehensive educational repository for teaching and learning Data Analysis using Python and modern analytical tools.
